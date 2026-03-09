@@ -30,10 +30,12 @@ app.use("/api/order",orderRoutes)
 
 
 
-app.listen(port,()=>{
-    console.log("Hello From Server")
-    connectDb()
+connectDb().then(() => {
+    app.listen(port, () => {
+        console.log("Server running on port", port)
+    })
 })
+
 
 
 
