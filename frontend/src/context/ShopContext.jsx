@@ -72,23 +72,30 @@ function ShopContext({children}) {
     } 
     }
 
+ const getUserCart = async () => {
+  try {
 
-    const getUserCart = async () => {
-      try {
-        const result = await axios.post(serverUrl + '/api/cart/get',{},{ withCredentials: true })
+    const result = await axios.post(
+      serverUrl + "/api/cart/get",
+      {},
+      { withCredentials:true }
+    )
 
-      setCartItem(result.data)
-    } catch (error) {
-      console.log(error)
-     
+    setCartItem(result.data || {})
 
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-    }
-      
-    }
     const updateQuantity = async (itemId , size , quantity) => {
-      let cartData = structuredClone(cartItem);
-    cartData[itemId][size] = quantity
+     let cartData = structuredClone(cartItem);
+
+    if(!cartData[itemId]){
+  cartData[itemId] = {}
+}
+
+cartData[itemId][size] = quantity
     setCartItem(cartData)
 
     if (userData) {
@@ -120,7 +127,8 @@ function ShopContext({children}) {
   const getCartAmount = () => {
   let totalAmount = 0;
     for (const items in cartItem) {
-      let itemInfo = products.find((product) => product._id === items);
+     let itemInfo = products.find((product) => product._id === items);
+if(!itemInfo) continue;
       for (const item in cartItem[items]) {
         try {
           if (cartItem[items][item] > 0) {
@@ -140,8 +148,10 @@ function ShopContext({children}) {
     },[])
 
     useEffect(() => {
+  if(userData){
     getUserCart()
-  },[])
+  }
+},[userData])
 
 
 
@@ -161,4 +171,5 @@ function ShopContext({children}) {
 }
 
 export default ShopContext
+
 
