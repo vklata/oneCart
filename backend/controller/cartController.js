@@ -38,49 +38,55 @@ export const addToCart = async (req,res) => {
     
 }
 
-
 export const UpdateCart = async (req,res) => {
-     try {
-         const {itemId , size , quantity } = req.body
-         const userData = await User.findById(req.userId)
-         let cartData = await userData.cartData;
+try {
 
-         cartData[itemId][size] = quantity
+const { itemId , size , quantity } = req.body
 
-          await User.findByIdAndUpdate(req.userId,{cartData})
+const userData = await User.findById(req.userId)
 
-    return res.status(201).json({message:"cart updated"})
+if(!userData){
+return res.status(404).json({message:"User not found"})
+}
 
+let cartData = userData.cartData || {}
 
+if(!cartData[itemId]){
+cartData[itemId] = {}
+}
 
+cartData[itemId][size] = quantity
 
-    } catch (error) {
-         console.log(error)
-    return res.status(500).json({message:"updateCart error"})
-    }
-    
-    
+await User.findByIdAndUpdate(req.userId,{cartData})
 
-    
+return res.status(200).json({
+message:"cart updated",
+cartData
+})
+
+} catch (error) {
+
+console.log(error)
+return res.status(500).json({message:"updateCart error"})
+
+}
 }
 
 export const getUserCart = async (req,res) => {
+try {
 
-     try {
-         
-         const userData = await User.findById(req.userId)
-         let cartData = await userData.cartData;
+const userData = await User.findById(req.userId)
 
+if(!userData){
+return res.status(404).json({message:"User not found"})
+}
 
-    return res.status(200).json(cartData)
+return res.status(200).json(userData.cartData || {})
 
+} catch (error) {
 
+console.log(error)
+return res.status(500).json({message:"getUserCart error"})
 
-
-    } catch (error) {
-         console.log(error)
-    return res.status(500).json({message:"getUserCart error"})
-    }
-    
-    
+}
 }
