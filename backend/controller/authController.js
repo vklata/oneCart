@@ -65,13 +65,21 @@ export const login = async (req,res) => {
 }
 export const logOut = async (req,res) => {
 try {
-    res.clearCookie("token")
-    return res.status(200).json({message:"logOut successful"})
+
+res.clearCookie("token",{
+httpOnly:true,
+secure:true,
+sameSite:"none"
+})
+
+return res.status(200).json({message:"logOut successful"})
+
 } catch (error) {
-    console.log("logOut error")
-    return res.status(500).json({message:`LogOut error ${error}`})
+
+console.log("logOut error")
+return res.status(500).json({message:`LogOut error ${error}`})
+
 }
-    
 }
 
 
@@ -124,5 +132,6 @@ export const adminLogin = async (req,res) => {
     }
     
 }
+
 
 
