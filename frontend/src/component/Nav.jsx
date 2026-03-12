@@ -15,7 +15,7 @@ import { shopDataContext } from '../context/ShopContext';
 function Nav() {
     let {getCurrentUser , userData,setUserData} = useContext(userDataContext)
     let {serverUrl} = useContext(authDataContext)
-    let {showSearch,setShowSearch,search,setSearch,getCartCount} = useContext(shopDataContext)
+    let {showSearch,setShowSearch,search,setSearch,getCartCount,setCartItem} = useContext(shopDataContext)
     let [showProfile,setShowProfile] = useState(false)
     let navigate = useNavigate()
 
@@ -25,6 +25,7 @@ function Nav() {
             const result = await axios.get(serverUrl + "/api/auth/logout" , {withCredentials:true})
             console.log(result.data)
             setUserData(null)
+            setCartItem({})
             navigate("/login")
         } catch (error) {
             console.log(error)
@@ -84,6 +85,7 @@ function Nav() {
 }
 
 export default Nav
+
 
 
 
